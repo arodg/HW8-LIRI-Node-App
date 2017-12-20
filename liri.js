@@ -13,10 +13,14 @@
 
 // 6. Create function for spotify
 // 7. npm node-spotify-api documenation
-// 8. Display artist, song name, preview, album
-// 9. Default to "The Sign" by Ace of Base
+// 8. Default to "The Sign" by Ace of Base
+// 9. Display artist, song name, preview, album
+
 
 // (C) MOVIE
+
+// 10. Create function for movie name, OMDB API
+// 11. If no movie title, display Mr. Nobody
 
 //
 
@@ -31,7 +35,7 @@ var Spotify = require('node-spotify-api');
 var request = require('request');
 
 
-// 3. Create function for tweets
+// 3. Function for tweets
 var myTweets = function () {
 	
 	// 4. Lines 25-44 based on npm documentation for twitter package
@@ -67,6 +71,7 @@ var mySpotify = function(title) {
 		secret: "d0974c3068694cdb8692898f055886c8"
 	});
 
+	// 8. Display The Sign by Ace of Base if no song title given. Look up ID from Spotify search
 	if (title == undefined) {
 		spotify
   		.request('https://api.spotify.com/v1/tracks/0hrBpAOgrt8RXigk83LLNE')
@@ -84,7 +89,6 @@ var mySpotify = function(title) {
  
 		spotify
 		.search({ type: 'track', query: title })
-	 	
 	 	.then(function(response) {
  			var info = response.tracks.items;
  			for (var i = 0; i < info.length; i+=1) {
@@ -102,6 +106,33 @@ var mySpotify = function(title) {
 }	 	
 
 
+// 10. Function for movie name
+var myMovie = function(title) {
+	
+	// 11. If no movie title given, display Mr. Nobody
+	if (title == undefined) {
+		var query = "http://www.omdbapi.com/?apikey=40e9cece&t=Mr+Nobody";
+	}
+	else {
+	var query = "http://www.omdbapi.com/?apikey=40e9cece&t=" + title;
+	}
+	
+	request(query, function(error, response, body) {
+
+  		if (!error && response.statusCode === 200) {
+
+    	console.log("Title: " + JSON.parse(body).Title);
+    	console.log("Release Year: " + JSON.parse(body).Year);
+    	console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+    	console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+    	console.log("Country: " + JSON.parse(body).Country);
+    	console.log("Language: " + JSON.parse(body).Language);
+    	console.log("Plot: " + JSON.parse(body).Plot);
+    	console.log("Actors: " + JSON.parse(body).Actors);;
+  	}
+	});
+}
+
 // 6. Switch statement
 var command = process.argv[2];
 var title = process.argv[3];
@@ -117,7 +148,7 @@ switch(command) {
 		break;
 
 	case "movie-this" :
-		myMovie();
+		myMovie(title);
 		break;
 
 	case "do-what-it-says" :
