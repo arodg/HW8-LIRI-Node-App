@@ -22,11 +22,16 @@
 // 10. Create function for movie name, OMDB API
 // 11. If no movie title, display Mr. Nobody
 
-//
+// (D) Do What It Says
+
+// 12. Use fs to read from random.txt and call spotify function
+
+
+// 13. Switch statement
 
 
 // 1. Required files
-var keys = require('./keys.js');
+var key = require('./keys.js');
 
 var Twitter = require('twitter');
 
@@ -34,13 +39,14 @@ var Spotify = require('node-spotify-api');
 
 var request = require('request');
 
+var fs = require('fs');
+
 
 // 3. Function for tweets
 var myTweets = function () {
 	
 	// 4. Lines 25-44 based on npm documentation for twitter package
-	var client = new Twitter(keys.twitterKeys);
-	
+	var client = new Twitter(key);
 	
 	// 5. Count is set for 20 tweets
 	var params = {screen_name: 'PixieSput', count: 20};
@@ -133,7 +139,38 @@ var myMovie = function(title) {
 	});
 }
 
-// 6. Switch statement
+
+var myFile = function () {
+	fs.readFile("random.txt", "utf8", function(error, data) {
+
+		if (error) {
+    		return console.log(error);
+  		}
+
+  		var x = data.split(",");
+  		console.log(x[0]);
+  
+  		if (x[0] == "my-tweets") {
+  			myTweets();
+  			return;
+  		}
+  		if (x[0] == "spotify-this-song") {
+  			mySpotify(x[1]);
+  			return;
+  		}
+  		if (x[0] == "movie-this") {
+  			myMovie(x[1]);
+  			return;
+  		}
+  		else {
+  			console.log("Use one of the following commands: my-tweets, spotify-this-song, movie-this, do-what-it-says");
+		}
+  	});
+}
+
+
+
+// 13. Switch statement
 var command = process.argv[2];
 var title = process.argv[3];
 
@@ -152,7 +189,7 @@ switch(command) {
 		break;
 
 	case "do-what-it-says" :
-		listen();
+		myFile();
 		break;
 
 		default:
